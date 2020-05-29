@@ -23,6 +23,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -51,6 +53,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -65,6 +68,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -79,6 +83,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -93,6 +98,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -107,6 +113,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -121,6 +128,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -135,6 +143,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -149,6 +158,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -163,6 +173,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -177,6 +188,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -191,6 +203,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -205,6 +218,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
@@ -219,6 +233,7 @@ int main(int argc, char** argv)
 
         auto result = progpow::hash(context, block_num, header, nonce);
 
+        std::cout << "block: " << block_num << "\n";
         std::cout << "result: " << dev::toHex(result.final_hash.bytes) << "\n";
         // std::cout << "mix: " << dev::toHex(result.mix_hash.bytes) << "\n";
     }
