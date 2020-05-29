@@ -8,8 +8,8 @@ set(EXECUTABLE serominer)
 
 file(GLOB HEADERS "*.h")
 
-add_executable(${EXECUTABLE} ${SRC_LIST} ${HEADERS})
-
+# add_executable(${EXECUTABLE} ${SRC_LIST} ${HEADERS})
+add_executable(${EXECUTABLE} main.cpp ${HEADERS})
 
 if(MSVC)
 	target_sources(${EXECUTABLE} PRIVATE serominer.rc)
