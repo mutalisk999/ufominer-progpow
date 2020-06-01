@@ -538,6 +538,26 @@ void EthGetworkClient::submitHashrate(uint64_t const& rate, string const& id)
     }
 }
 
+//void EthGetworkClient::submitSolution(const Solution& solution)
+//{
+//    if (m_session)
+//    {
+//        Json::Value jReq;
+//        string nonceHex = toHex(solution.nonce);
+//
+//        unsigned id = 40 + solution.midx;
+//        jReq["id"] = id;
+//        m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
+//        jReq["method"] = "sero_submitWork";
+//        jReq["params"] = Json::Value(Json::arrayValue);
+//        jReq["params"].append("0x" + nonceHex);
+//        jReq["params"].append("0x" + solution.work.header.hex());
+//        jReq["params"].append("0x" + solution.mixHash.hex());
+//        send(jReq);
+//    }
+//}
+
+
 void EthGetworkClient::submitSolution(const Solution& solution)
 {
     if (m_session)
@@ -545,17 +565,17 @@ void EthGetworkClient::submitSolution(const Solution& solution)
         Json::Value jReq;
         string nonceHex = toHex(solution.nonce);
 
-        unsigned id = 40 + solution.midx;
+        unsigned id = 1;
         jReq["id"] = id;
-        m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
-        jReq["method"] = "sero_submitWork";
+        jReq["method"] = "mining.submit";
         jReq["params"] = Json::Value(Json::arrayValue);
-        jReq["params"].append("0x" + nonceHex);
-        jReq["params"].append("0x" + solution.work.header.hex());
-        jReq["params"].append("0x" + solution.mixHash.hex());
+        jReq["params"].append(solution.work.job);
+        jReq["params"].append(toHex(solution.nonce));
+        jReq["params"].append(solution.mixHash.hex());
         send(jReq);
     }
 }
+
 
 void EthGetworkClient::getwork_timer_elapsed(const boost::system::error_code& ec)
 {

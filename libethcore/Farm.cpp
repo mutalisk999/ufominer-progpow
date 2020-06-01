@@ -488,6 +488,8 @@ void Farm::submitProofAsync(Solution const& _s)
 
         valid = ProgPoWAux::verify( _s.work.epoch, _s.work.block, _s.work.header, _s.mixHash, _s.nonce, _s.work.boundary);
 
+        // valid = ProgPoWAux::verify( _s.work.epoch, _s.work.block, _s.work.header, _s.nonce, _s.work.boundary);
+
         if (!valid)
         {
             accountSolution(_s.midx, SolutionAccountingEnum::Failed);

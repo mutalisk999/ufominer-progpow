@@ -40,6 +40,15 @@ bool ProgPoWAux::verify(
     return progpow::verify(context, block, header, mix, _nonce, target);
 }
 
+//bool ProgPoWAux::verify(
+//    int epoch, int block, h256 const& _headerHash, uint64_t _nonce, h256 const& _target) noexcept
+//{
+//    auto& context = progpow::get_global_epoch_context(epoch);
+//    auto header = progpow::hash256_from_bytes(_headerHash.data());
+//    auto target = progpow::hash256_from_bytes(_target.data());
+//    return progpow::verify(context, block, header, _nonce, target);
+//}
+
 h256 dev::eth::ProgPoWAux::hash(int epoch, int block, h256 const& _headerHash, uint64_t _nonce)
 {
     auto& context = progpow::get_global_epoch_context(epoch);

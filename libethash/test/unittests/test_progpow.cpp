@@ -96,6 +96,23 @@ TEST(progpow, hash_and_verify)
         auto mix_failure = progpow::verify(
             *context, t.block_number, header_hash, different_mix, nonce, result.final_hash);
         EXPECT_FALSE(mix_failure);
+        
+
+        //auto success = progpow::verify(
+        //    *context, t.block_number, header_hash, nonce, result.final_hash);
+        //EXPECT_TRUE(success);
+
+        //auto lower_boundary = result.final_hash;
+        //--lower_boundary.bytes[31];
+        //auto final_failure = progpow::verify(
+        //    *context, t.block_number, header_hash, nonce, lower_boundary);
+        //EXPECT_FALSE(final_failure);
+
+        //auto different_mix = result.mix_hash;
+        //++different_mix.bytes[7];
+        //auto mix_failure = progpow::verify(
+        //    *context, t.block_number, header_hash, nonce, result.final_hash);
+        //EXPECT_FALSE(mix_failure);
     }
 }
 
