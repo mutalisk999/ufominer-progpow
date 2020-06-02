@@ -1643,11 +1643,7 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
         SHA256((const unsigned char*)hash_str_no_nonce.c_str(), hash_str_no_nonce.length(), p);
 
         // calc header
-        bytes bs;
-        bs.reserve(32);
-        for (int i = 0; i < 32; ++i) bs[i] = *(p + i);
-
-        string header = toHex(bs);
+        string header = toHex(out);
 
         m_current.header = h256(header);
         m_current.boundary = h256(m_session->nextWorkBoundary.hex(HexPrefix::Add));

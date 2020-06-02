@@ -20,8 +20,11 @@ find_package(CLI11 CONFIG REQUIRED)
 
 target_link_libraries(serominer PRIVATE ethcore poolprotocols devcore serominer-buildinfo CLI11::CLI11 Boost::system Boost::thread)
 
-add_executable(sero_test test.cpp)
-target_link_libraries(sero_test PRIVATE ethcore poolprotocols devcore serominer-buildinfo CLI11::CLI11 Boost::system Boost::thread)
+add_executable(progpow_test1 progpow_test1.cpp)
+target_link_libraries(progpow_test1 PRIVATE ethcore poolprotocols devcore serominer-buildinfo CLI11::CLI11 Boost::system Boost::thread)
+
+add_executable(progpow_test2 progpow_test2.cpp)
+target_link_libraries(progpow_test2 PRIVATE ethcore poolprotocols devcore serominer-buildinfo CLI11::CLI11 Boost::system Boost::thread)
 
 
 if(DBUS)
