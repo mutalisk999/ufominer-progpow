@@ -570,7 +570,11 @@ void EthGetworkClient::submitSolution(const Solution& solution)
         jReq["method"] = "mining.submit";
         jReq["params"] = Json::Value(Json::arrayValue);
         jReq["params"].append(solution.work.job);
-        jReq["params"].append(toHex(solution.nonce));
+        
+        std::string nonceStr = toHex(solution.nonce);
+        nonceStr.substr(m_current.exSizeBytes * 2, nonceStr.length());
+
+        jReq["params"].append(nonceStr);
         jReq["params"].append(solution.mixHash.hex());
         send(jReq);
     }
