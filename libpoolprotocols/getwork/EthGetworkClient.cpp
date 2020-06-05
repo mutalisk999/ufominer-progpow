@@ -571,7 +571,7 @@ void EthGetworkClient::submitSolution(const Solution& solution)
         Json::Value jReq;
         string nonceHex = toHex(solution.nonce);
 
-        unsigned id = 1;
+        unsigned id = 99990001;
         jReq["id"] = id;
         jReq["method"] = "mining.submit";
         jReq["params"] = Json::Value(Json::arrayValue);

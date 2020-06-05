@@ -413,12 +413,13 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
                 {
                     // Waiting for a response from pool to a login request
                     // Async self send a fake error response
-                    Json::Value jRes;
-                    jRes["id"] = unsigned(1);
-                    jRes["result"] = Json::nullValue;
-                    jRes["error"] = true;
-                    clear_response_pleas();
-                    m_io_service.post(m_io_strand.wrap(boost::bind(&EthStratumClient::processResponse, this, jRes)));
+
+                    //Json::Value jRes;
+                    //jRes["id"] = unsigned(1);
+                    //jRes["result"] = Json::nullValue;
+                    //jRes["error"] = true;
+                    //clear_response_pleas();
+                    //m_io_service.post(m_io_strand.wrap(boost::bind(&EthStratumClient::processResponse, this, jRes)));
                 }
                 else
                 {
@@ -725,7 +726,7 @@ void EthStratumClient::connect_handler(const boost::system::error_code& ec)
 
     // send mining.authorize.subscribe
     Json::Value jReq;
-    jReq["id"] = unsigned(99999999);
+    jReq["id"] = unsigned(99990000);
     jReq["method"] = "mining.authorize.subscribe";
     jReq["params"] = Json::Value(Json::arrayValue);
     jReq["params"].append(m_conn->User() + "." + m_conn->Workername());
@@ -1591,23 +1592,24 @@ void EthStratumClient::processExtranonce(std::string& enonce)
 
 void EthStratumClient::processResponse(Json::Value& responseObject)
 {
-    bool _isSuccess = false;       // Whether or not this is a succesful or failed response (implies
-                                   // _isNotification = false)
-    string _errReason = "";        // Content of the error reason
     string _method = "";           // The method of the notification (or request from pool)
     unsigned _id = 0;              // This SHOULD be the same id as the request it is responding to (known
                                    // exception is ethermine.org using 999)
 
     // Retrieve essential values
     _id = responseObject.get("id", unsigned(0)).asUInt();
-    _isSuccess = responseObject.get("error", Json::Value::null).empty();
-    _errReason = (_isSuccess ? "" : processError(responseObject));
     _method = responseObject.get("method", "").asString();
 
     Json::Value jReq;
     Json::Value jPrm;
 
     unsigned prmIdx;
+
+    bool _resp = false;
+
+    if (_id / 10000 == 9999) {
+        _resp = true;
+    }
 
     if (_method == "mining.notify")
     {
@@ -1675,28 +1677,52 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
             m_session->nextWorkBoundary = h256(dev::getTargetFromDiff(nextWorkDifficultyAsBtc));
         }
     }
-    else if (_method == "" && _id == 99999999)
+    else if (_method == "" && _resp)
     {
-        // mining.authorize.subscribe
-        cnote << "Got mining.authorize.subscribe ...";
-
-        jPrm = responseObject.get("result", Json::Value::null);
-        if (jPrm.isArray())
+        if (_id == 99990000)
         {
-            std::string enonce = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
-            if (!enonce.empty())
+            // mining.authorize.subscribe
+            cnote << "Got response of mining.authorize.subscribe ...";
+
+            jPrm = responseObject.get("result", Json::Value::null);
+            if (jPrm.isArray())
             {
-                startSession();
-                processExtranonce(enonce);
+                std::string enonce = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
+                if (!enonce.empty())
+                {
+                    startSession();
+                    processExtranonce(enonce);
               
-                m_session->authorized = true;
-                m_session->subscribed = true;
+                    m_session->authorized = true;
+                    m_session->subscribed = true;
+                }
+            }
+        } 
+        else if (_id == 99990001)
+        {
+            // mining.submit
+            cnote << "Got response of mining.submit ...";
+
+            jPrm = responseObject.get("result", Json::Value::null);
+            if (jPrm.isBool())
+            {
+                bool r = jPrm.asBool();
+                if (r)
+                {
+                    cnote << "Submit success, share is accepted ...";
+                }
+                else
+                {
+                    cwarn << "Submit failed, share is rejected ...";
+                    cwarn << responseObject.toStyledString();
+                }
             }
         }
     }
     else
     {
         cwarn << "Got unknown method [" << _method << "] from pool. Discarding...";
+        cwarn << responseObject.toStyledString();
 
         // Respond back to issuer
         jReq["jsonrpc"] = "2.0";
@@ -1827,7 +1853,7 @@ void EthStratumClient::submitSolution(const Solution& solution)
         Json::Value jReq;
         string nonceHex = toHex(solution.nonce);
 
-        unsigned id = 1;
+        unsigned id = 99990001;
         jReq["id"] = id;
         jReq["method"] = "mining.submit";
         jReq["params"] = Json::Value(Json::arrayValue);
