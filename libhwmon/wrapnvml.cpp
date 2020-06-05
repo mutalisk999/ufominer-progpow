@@ -12,7 +12,7 @@
  *
  * John E. Stone - john.stone@gmail.com
  *
- * Modified to work with serominer by
+ * Modified to work with ufominer by
  *
  * Philipp Andreas - github@smurfy.de
  */

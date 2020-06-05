@@ -1,4 +1,4 @@
-#include <serominer/buildinfo.h>
+#include <ufominer/buildinfo.h>
 #include <libdevcore/Log.h>
 #include <ethash/ethash.hpp>
 
@@ -369,7 +369,6 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
         }
     }
 
-
     if (m_response_pleas_count.load(std::memory_order_relaxed))
     {
         milliseconds response_delay_ms(0);
@@ -520,7 +519,7 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
 //#endif
 //                cwarn << "* Double check hostname in the -P argument.";
 //                cwarn << "* Disable certificate verification all-together via environment "
-//                         "variable. See serominer --help for info about environment variables";
+//                         "variable. See ufominer --help for info about environment variables";
 //                cwarn << "If you do the latter please be advised you might expose yourself to the "
 //                         "risk of seeing your shares stolen";
 //            }
@@ -583,7 +582,7 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
 //
 //    case EthStratumClient::ETHPROXY:
 //
-//        jReq["method"] = "sero_submitLogin";
+//        jReq["method"] = "ufo_submitLogin";
 //        if (!m_conn->Workername().empty())
 //            jReq["worker"] = m_conn->Workername();
 //        jReq["params"].append(m_conn->User() + m_conn->Path());
@@ -594,7 +593,7 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
 //
 //    case EthStratumClient::ETHEREUMSTRATUM:
 //
-//        jReq["params"].append(serominer_get_buildinfo()->project_name_with_version);
+//        jReq["params"].append(ufominer_get_buildinfo()->project_name_with_version);
 //        jReq["params"].append("EthereumStratum/1.0.0");
 //
 //        break;
@@ -603,7 +602,7 @@ void EthStratumClient::workloop_timer_elapsed(const boost::system::error_code& e
 //
 //        jReq["method"] = "mining.hello";
 //        Json::Value jPrm;
-//        jPrm["agent"] = serominer_get_buildinfo()->project_name_with_version;
+//        jPrm["agent"] = ufominer_get_buildinfo()->project_name_with_version;
 //        jPrm["host"] = m_conn->Host();
 //        jPrm["port"] = toCompactHex((uint32_t)m_conn->Port(), HexPrefix::DontAdd);
 //        jPrm["proto"] = "EthereumStratum/2.0.0";
@@ -634,7 +633,6 @@ void EthStratumClient::connect_handler(const boost::system::error_code& ec)
 {
     // Set status completion
     m_connecting.store(false, std::memory_order_relaxed);
-
 
     // Timeout has run before or we got error
     if (ec || !m_socket->is_open())
@@ -702,7 +700,7 @@ void EthStratumClient::connect_handler(const boost::system::error_code& ec)
 #endif
                 cwarn << "* Double check hostname in the -P argument.";
                 cwarn << "* Disable certificate verification all-together via environment "
-                         "variable. See serominer --help for info about environment variables";
+                         "variable. See ufominer --help for info about environment variables";
                 cwarn << "If you do the latter please be advised you might expose yourself to the "
                          "risk of seeing your shares stolen";
             }
@@ -727,7 +725,7 @@ void EthStratumClient::connect_handler(const boost::system::error_code& ec)
 
     // send mining.authorize.subscribe
     Json::Value jReq;
-    jReq["id"] = unsigned(1);
+    jReq["id"] = unsigned(99999999);
     jReq["method"] = "mining.authorize.subscribe";
     jReq["params"] = Json::Value(Json::arrayValue);
     jReq["params"].append(m_conn->User() + "." + m_conn->Workername());
@@ -832,7 +830,7 @@ void EthStratumClient::processExtranonce(std::string& enonce)
 //        (_isNotification && (responseObject["params"].empty() && responseObject["result"].empty())))
 //    {
 //        cwarn << "Pool sent an invalid jsonrpc message...";
-//        cwarn << "Do not blame serominer for this. Ask pool devs to honor http://www.jsonrpc.org/ "
+//        cwarn << "Do not blame ufominer for this. Ask pool devs to honor http://www.jsonrpc.org/ "
 //                 "specifications ";
 //        cwarn << "Disconnecting...";
 //        m_io_service.post(m_io_strand.wrap(boost::bind(&EthStratumClient::disconnect, this)));
@@ -1004,7 +1002,7 @@ void EthStratumClient::processExtranonce(std::string& enonce)
 //
 //                    // Request initial work
 //                    jReq["id"] = unsigned(5);
-//                    jReq["method"] = "sero_getWork";
+//                    jReq["method"] = "ufo_getWork";
 //                    jReq["params"] = Json::Value(Json::arrayValue);
 //                }
 //                else
@@ -1561,7 +1559,7 @@ void EthStratumClient::processExtranonce(std::string& enonce)
 //        else if (_method == "client.get_version")
 //        {
 //            jReq["id"] = _id;
-//            jReq["result"] = serominer_get_buildinfo()->project_name_with_version;
+//            jReq["result"] = ufominer_get_buildinfo()->project_name_with_version;
 //
 //            if (_rpcVer == 1)
 //            {
@@ -1615,12 +1613,14 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
     {
         if (!m_session)
         {
-            cwarn << "Got mining.notify before mining.set message. Discarding ...";
+            cwarn << "Got mining.notify before mining.authorize.subscribe message. Discarding ...";
             return;
         }
 
+        cnote << "Got mining.notify...";
+
         if (!responseObject.isMember("params") || !responseObject["params"].isArray() ||
-            responseObject["params"].empty() || responseObject["params"].size() != 4)
+            responseObject["params"].empty() || responseObject["params"].size() != 5)
         {
             cwarn << "Got invalid mining.notify message. Discarding ...";
             return;
@@ -1628,7 +1628,6 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
 
         jPrm = responseObject["params"];
 
-        // TODO
         m_current.job = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
 
         string prev = jPrm.get(Json::Value::ArrayIndex(1), "").asString();
@@ -1658,6 +1657,14 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
     }
     else if (_method == "mining.set_difficulty")
     {
+        if (!m_session)
+        {
+            cwarn << "Got mining.set_difficulty before mining.authorize.subscribe message. Discarding ...";
+            return;
+        }
+
+        cnote << "Got mining.set_difficulty...";
+
         jPrm = responseObject.get("params", Json::Value::null);
         if (jPrm.isArray())
         {
@@ -1668,14 +1675,23 @@ void EthStratumClient::processResponse(Json::Value& responseObject)
             m_session->nextWorkBoundary = h256(dev::getTargetFromDiff(nextWorkDifficultyAsBtc));
         }
     }
-    else if (_method == "mining.authorize.subscribe")
+    else if (_method == "" && _id == 99999999)
     {
-        jPrm = responseObject.get("params", Json::Value::null);
+        // mining.authorize.subscribe
+        cnote << "Got mining.authorize.subscribe ...";
+
+        jPrm = responseObject.get("result", Json::Value::null);
         if (jPrm.isArray())
         {
             std::string enonce = jPrm.get(Json::Value::ArrayIndex(0), "").asString();
             if (!enonce.empty())
+            {
+                startSession();
                 processExtranonce(enonce);
+              
+                m_session->authorized = true;
+                m_session->subscribed = true;
+            }
         }
     }
     else
@@ -1712,7 +1728,7 @@ void EthStratumClient::submitHashrate(uint64_t const& rate, string const& id)
         jReq["jsonrpc"] = "2.0";
         if (!m_conn->Workername().empty())
             jReq["worker"] = m_conn->Workername();
-        jReq["method"] = "sero_submitHashrate";
+        jReq["method"] = "ufo_submitHashrate";
         jReq["params"].append(toHex(rate, HexPrefix::Add, 32));  // Already expressed as hex
         jReq["params"].append(id);                               // Already prefixed by 0x
     }
@@ -1737,6 +1753,67 @@ void EthStratumClient::submitHashrate(uint64_t const& rate, string const& id)
     send(jReq);
 }
 
+//void EthStratumClient::submitSolution(const Solution& solution)
+//{
+//    if (!isAuthorized())
+//    {
+//        cwarn << "Solution not submitted. Not authorized.";
+//        return;
+//    }
+//
+//    Json::Value jReq;
+//
+//    unsigned id = 40 + solution.midx;
+//    jReq["id"] = id;
+//    m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
+//    jReq["method"] = "mining.submit";
+//    jReq["params"] = Json::Value(Json::arrayValue);
+//
+//    switch (m_conn->StratumMode())
+//    {
+//    case EthStratumClient::STRATUM:
+//
+//        jReq["jsonrpc"] = "2.0";
+//        jReq["params"].append(m_conn->User());
+//        jReq["params"].append(solution.work.job);
+//        jReq["params"].append(toHex(solution.nonce, HexPrefix::Add));
+//        jReq["params"].append(solution.work.header.hex(HexPrefix::Add));
+//        jReq["params"].append(solution.mixHash.hex(HexPrefix::Add));
+//        if (!m_conn->Workername().empty())
+//            jReq["worker"] = m_conn->Workername();
+//
+//        break;
+//
+//    case EthStratumClient::ETHPROXY:
+//
+//        jReq["method"] = "ufo_submitWork";
+//        jReq["params"].append(toHex(solution.nonce, HexPrefix::Add));
+//        jReq["params"].append(solution.work.header.hex(HexPrefix::Add));
+//        jReq["params"].append(solution.mixHash.hex(HexPrefix::Add));
+//        if (!m_conn->Workername().empty())
+//            jReq["worker"] = m_conn->Workername();
+//
+//        break;
+//
+//    case EthStratumClient::ETHEREUMSTRATUM:
+//
+//        jReq["params"].append(m_conn->UserDotWorker());
+//        jReq["params"].append(solution.work.job);
+//        jReq["params"].append(toHex(solution.nonce, HexPrefix::DontAdd).substr(solution.work.exSizeBytes));
+//        break;
+//
+//    case EthStratumClient::ETHEREUMSTRATUM2:
+//
+//        jReq["params"].append(solution.work.job);
+//        jReq["params"].append(toHex(solution.nonce, HexPrefix::DontAdd).substr(solution.work.exSizeBytes));
+//        jReq["params"].append(m_session->workerId);
+//        break;
+//    }
+//
+//    enqueue_response_plea();
+//    send(jReq);
+//}
+
 void EthStratumClient::submitSolution(const Solution& solution)
 {
     if (!isAuthorized())
@@ -1745,58 +1822,27 @@ void EthStratumClient::submitSolution(const Solution& solution)
         return;
     }
 
-    Json::Value jReq;
-
-    unsigned id = 40 + solution.midx;
-    jReq["id"] = id;
-    m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
-    jReq["method"] = "mining.submit";
-    jReq["params"] = Json::Value(Json::arrayValue);
-
-    switch (m_conn->StratumMode())
+    if (m_session)
     {
-    case EthStratumClient::STRATUM:
+        Json::Value jReq;
+        string nonceHex = toHex(solution.nonce);
 
-        jReq["jsonrpc"] = "2.0";
-        jReq["params"].append(m_conn->User());
+        unsigned id = 1;
+        jReq["id"] = id;
+        jReq["method"] = "mining.submit";
+        jReq["params"] = Json::Value(Json::arrayValue);
         jReq["params"].append(solution.work.job);
-        jReq["params"].append(toHex(solution.nonce, HexPrefix::Add));
-        jReq["params"].append(solution.work.header.hex(HexPrefix::Add));
-        jReq["params"].append(solution.mixHash.hex(HexPrefix::Add));
-        if (!m_conn->Workername().empty())
-            jReq["worker"] = m_conn->Workername();
 
-        break;
+        std::string nonceStr = toHex(solution.nonce);
+        // trim extra nonce
+        nonceStr = nonceStr.substr(m_current.exSizeBytes * 2, nonceStr.length());
 
-    case EthStratumClient::ETHPROXY:
-
-        jReq["method"] = "sero_submitWork";
-        jReq["params"].append(toHex(solution.nonce, HexPrefix::Add));
-        jReq["params"].append(solution.work.header.hex(HexPrefix::Add));
-        jReq["params"].append(solution.mixHash.hex(HexPrefix::Add));
-        if (!m_conn->Workername().empty())
-            jReq["worker"] = m_conn->Workername();
-
-        break;
-
-    case EthStratumClient::ETHEREUMSTRATUM:
-
-        jReq["params"].append(m_conn->UserDotWorker());
-        jReq["params"].append(solution.work.job);
-        jReq["params"].append(toHex(solution.nonce, HexPrefix::DontAdd).substr(solution.work.exSizeBytes));
-        break;
-
-    case EthStratumClient::ETHEREUMSTRATUM2:
-
-        jReq["params"].append(solution.work.job);
-        jReq["params"].append(toHex(solution.nonce, HexPrefix::DontAdd).substr(solution.work.exSizeBytes));
-        jReq["params"].append(m_session->workerId);
-        break;
+        jReq["params"].append(nonceStr);
+        jReq["params"].append(solution.mixHash.hex());
+        send(jReq);
     }
-
-    enqueue_response_plea();
-    send(jReq);
 }
+
 
 void EthStratumClient::recvSocketData()
 {

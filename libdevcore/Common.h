@@ -1,5 +1,5 @@
-// serominer -- Ethereum miner with OpenCL, CUDA and stratum support.
-// Copyright 2018 serominer Authors.
+// ufominer -- Ethereum miner with OpenCL, CUDA and stratum support.
+// Copyright 2018 ufominer Authors.
 // Licensed under GNU General Public License, Version 3. See the LICENSE file.
 
 /// @file

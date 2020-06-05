@@ -26,7 +26,7 @@ EthGetworkClient::EthGetworkClient(int worktimeout, unsigned farmRecheckPeriod)
     Json::Value jGetWork;
     jGetWork["id"] = unsigned(1);
     jGetWork["jsonrpc"] = "2.0";
-    jGetWork["method"] = "sero_getWork";
+    jGetWork["method"] = "ufo_getWork";
     jGetWork["params"] = Json::Value(Json::arrayValue);
     m_jsonGetWork = std::string(Json::writeString(m_jSwBuilder, jGetWork));
 }
@@ -372,7 +372,7 @@ void EthGetworkClient::processResponse(Json::Value& JRes)
 
     // We have only theese possible ids
     // 0 or 1 as job notification
-    // 9 as response for sero_submitHashrate
+    // 9 as response for ufo_submitHashrate
     // 40+ for responses to mining submissions
     if (_id == 0 || _id == 1)
     {
@@ -393,7 +393,7 @@ void EthGetworkClient::processResponse(Json::Value& JRes)
         {
             if (!JRes.isMember("result"))
             {
-                cwarn << "Missing data for sero_getWork request from " << m_conn->Host() << ":"
+                cwarn << "Missing data for ufo_getWork request from " << m_conn->Host() << ":"
                       << toString(m_conn->Port());
             }
             else
@@ -530,7 +530,7 @@ void EthGetworkClient::submitHashrate(uint64_t const& rate, string const& id)
         Json::Value jReq;
         jReq["id"] = unsigned(9);
         jReq["jsonrpc"] = "2.0";
-        jReq["method"] = "sero_submitHashrate";
+        jReq["method"] = "ufo_submitHashrate";
         jReq["params"] = Json::Value(Json::arrayValue);
         jReq["params"].append(toHex(rate, HexPrefix::Add));  // Already expressed as hex
         jReq["params"].append(id);                           // Already prefixed by 0x
@@ -548,7 +548,7 @@ void EthGetworkClient::submitHashrate(uint64_t const& rate, string const& id)
 //        unsigned id = 40 + solution.midx;
 //        jReq["id"] = id;
 //        m_solution_submitted_max_id = max(m_solution_submitted_max_id, id);
-//        jReq["method"] = "sero_submitWork";
+//        jReq["method"] = "ufo_submitWork";
 //        jReq["params"] = Json::Value(Json::arrayValue);
 //        jReq["params"].append("0x" + nonceHex);
 //        jReq["params"].append("0x" + solution.work.header.hex());
@@ -560,6 +560,12 @@ void EthGetworkClient::submitHashrate(uint64_t const& rate, string const& id)
 
 void EthGetworkClient::submitSolution(const Solution& solution)
 {
+    if (!isAuthorized())
+    {
+        cwarn << "Solution not submitted. Not authorized.";
+        return;
+    }
+
     if (m_session)
     {
         Json::Value jReq;
@@ -572,7 +578,8 @@ void EthGetworkClient::submitSolution(const Solution& solution)
         jReq["params"].append(solution.work.job);
         
         std::string nonceStr = toHex(solution.nonce);
-        nonceStr.substr(m_current.exSizeBytes * 2, nonceStr.length());
+        // trim extra nonce
+        nonceStr = nonceStr.substr(m_current.exSizeBytes * 2, nonceStr.length());
 
         jReq["params"].append(nonceStr);
         jReq["params"].append(solution.mixHash.hex());

@@ -19,7 +19,7 @@ HunterGate(
     LOCAL
 )
 
-project(serominer)
+project(ufominer)
 set(PROJECT_VERSION 0.3.0)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
@@ -113,7 +113,7 @@ if (API)
 	add_subdirectory(libapicore)
 endif()
 
-add_subdirectory(serominer)
+add_subdirectory(ufominer)
 
 
 if(WIN32)

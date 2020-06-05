@@ -83,13 +83,13 @@ sudo apt-get install mesa-common-dev
 4. Build the project using [CMake Build Tool Mode]. This is a portable variant of `make`.
 
     ```shell
-    make serominer
+    make ufominer
     ```
 
     Note: On Windows, it is possible to have compiler issues if you don't specify the build config. In that case use:
 
     ```shell
-    cmake --build . --config Release --target serominer
+    cmake --build . --config Release --target ufominer
     ```
 
 
@@ -97,7 +97,7 @@ sudo apt-get install mesa-common-dev
 
 Complete sample Windows batch file - **adapt it to your system**. Assumes that:
 
-* it's placed one folder up from the serominer source folder
+* it's placed one folder up from the ufominer source folder
 * you have CMake installed
 * you have Perl installed
 

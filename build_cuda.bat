@@ -19,7 +19,7 @@ cmake -G "Visual Studio 15 2017 Win64" -H. -Bbuild_cuda -T v140 -DCUDA=ON -DCPU=
 
 cd build_cuda
 
-cmake --build . --config Release --target serominer
+cmake --build . --config Release --target ufominer
 rem make cminer
 
 endlocal

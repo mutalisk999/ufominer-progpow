@@ -1,7 +1,7 @@
 /*
  This file is part of ethereum.
 
- serominer is free software: you can redistribute it and/or modify
+ ufominer is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
@@ -12,7 +12,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with serominer.  If not, see <http://www.gnu.org/licenses/>.
+ along with ufominer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "Miner.h"
@@ -199,11 +199,11 @@ void Miner::minerLoop()
         if (paused() || !m_work_latest)  // Wait ! Gpu is not ready or there is no work
             continue;
 
-        if(m_work_latest.block<940410) {
-            this_thread::sleep_for(chrono::seconds(10));
-            clog << "not yet above the 940410 height, sleep 2 seconds!\n";
-            continue;
-        }
+        //if(m_work_latest.block<940410) {
+        //    this_thread::sleep_for(chrono::seconds(10));
+        //    clog << "not yet above the 940410 height, sleep 2 seconds!\n";
+        //    continue;
+        //}
 
         // Copy latest work into active slot
         {
